@@ -1,11 +1,22 @@
 ---
 import background from '../assets/background.svg';
+import { db, Song } from 'astro:db';
+
+const songs = await db.select().from(Song);
+
 ---
 
 <div id="container">
 	<img id="background" src={background.src} alt="" fetchpriority="high" />
 	<main>
-		<div>test</div>
+		{
+			songs.map(({ title, artist }) => (
+				<article>
+					<h1>{title}</h1>
+					<p>{artist}</p>
+				</article>
+			))
+		}
 	</main>
 </div>
 
