@@ -1,6 +1,7 @@
 ---
 import background from '../assets/background.svg';
 import { db, Song } from 'astro:db';
+import 'swiper/css';
 
 const songs = await db.select().from(Song);
 
@@ -9,16 +10,48 @@ const songs = await db.select().from(Song);
 <div id="container">
 	<img id="background" src={background.src} alt="" fetchpriority="high" />
 	<main>
-		{
-			songs.map(({ title, artist }) => (
-				<article>
-					<h1>{title}</h1>
-					<p>{artist}</p>
-				</article>
-			))
-		}
+		<div class="w-full max-w-4xl px-4">
+			<h1 class="text-4xl mb-8 text-center text-white bitcount-single">♫ Historiál de Canciones ♫</h1>
+			<div class="swiper text-left" dir="rtl">
+				<div class="swiper-wrapper">
+					{
+						songs.map(({ title, artist, dateAdded, url }) => (
+							<a href={url} class="swiper-slide bg-[rgb(200,200,255)] text-black rounded-lg shadow-lg p-4 max-w-xs relative" >
+								<img src="/image.png" alt="" />
+								<h1 class="text-2xl font-semibold">{title}</h1>
+								<span>{artist}</span>
+								<div class="absolute right-4 bottom-3 flex gap-2 items-baseline bitcount-single">
+									<span class="text-xl text-gray-600 capitalize">{new Date(dateAdded).toLocaleString('es', { month: 'short' })}</span>
+									<span class="text-2xl text-gray-600 font-semibold">{new Date(dateAdded).getDay()}</span>
+								</div>
+							</a>
+						))
+					}
+				</div>
+			</div>
+		</div>
 	</main>
+
 </div>
+
+<script>
+	import Swiper from 'swiper';
+	import { EffectCoverflow } from 'swiper/modules';
+
+	const swiper = new Swiper('.swiper', {
+		modules: [EffectCoverflow],
+		effect: "coverflow",
+		centeredSlides: true,
+		slidesPerView: "auto",
+		coverflowEffect: {
+			rotate: 5,
+			stretch: 0,
+			depth: 150,
+			modifier: 1,
+			slideShadows: true,
+		},
+	});
+</script>
 
 <style>
 	#background {
